@@ -82,6 +82,7 @@ const render = tarefas => {
  */
 const create = (texto, prioridade) => {
     return {
+        id: tarefas[tarefas.length -1].id +1,
         texto,
         prioridade,
         feito: false
@@ -98,9 +99,45 @@ let form = document.getElementById('form');
 
 //FORMA 2 =================
 form.addEventListener('submit', (evt) => {
+    //Evitar o comportamento padrão de um form
     evt.preventDefault();
-    console.log("teste");
-    console.log(evt);
+
+    //Capturar o texto dogitado pelo usuário
+    let texto = document.getElementById("tf_2do").value;
+
+    //Verificar se existe prioridade settada nesse texto
+    let strInicio = texto.substr(0,3);
+    let prioridade = 1;
+    switch (strInicio){
+        case '#1 ':
+            prioridade = 1;
+            texto = texto.slice(3);
+            break;
+        case '#2 ':
+            prioridade = 2;
+            texto = texto.slice(3);
+            break;
+        case '#3 ':
+            prioridade = 3;
+            texto = texto.slice(3);
+            break;
+
+        default:
+            prioridade = 1;
+            break;
+    }
+
+    //Criar o Objeto de tarefa sabendo o texto e a prioridade
+    let tarefa = create(texto, prioridade);
+
+    //Adicionar o objeto tarefa ao array de tarefas
+    tarefas.push(tarefa);
+
+    //Renderizar a minha lista novamente
+    render(tarefas);
+
+    //Limpar o campo de texto
+    document.getElementById("tf_2do").value = "";
 });
 
 render(tarefas);
