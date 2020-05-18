@@ -14,7 +14,7 @@ let tarefas = [{
         id: 3,
         texto: "Almoçar brócolis",
         prioridade: 2,
-        feito: true
+        feito: false
     },
     {
         id: 4,
@@ -23,6 +23,9 @@ let tarefas = [{
         feito: false
     },
 ];
+// Array de prioridade
+let prioridades = ['[Baixa]', '[Média]', '[Alta]'];
+//let prioridades = [{0:'baixa'}, {1:'média'}, {2:'Alta'}];
 
 const render = tarefas => {
     // Capturar o elemento que contem a lista de tarefas
@@ -40,10 +43,15 @@ const render = tarefas => {
 
         // Criando uma linha de tabela
         let row = document.createElement('tr');
+        if(tarefa.feito){
+            // row.className = 'done';
+            row.classList.add("done");
+        }
 
         //Criar o input checkbox
         let checkbox = document.createElement('input');
         checkbox.setAttribute("type", "checkbox");
+        checkbox.checked = tarefa.feito;
 
         //Criar a célula que vai conter o checkbox
         let tdCheck = document.createElement('td');
@@ -56,12 +64,20 @@ const render = tarefas => {
         let tdTexto = document.createElement('td');
         tdTexto.innerText = tarefa.texto;
         row.appendChild(tdTexto);
+        
+        //Criar a td de prioridade
+        let tdPrioridade = document.createElement('td');
+        tdPrioridade.innerText = prioridades[(tarefa.prioridade) -1]; 
+        // tdPrioridade.innerText = prioridades[tarefa.prioridade]; 
+        row.appendChild(tdPrioridade);
 
         //Criar a td de ações
         let tdAcoes = document.createElement('td');
         let i = document.createElement('i');
         i.className = "material-icons";
         i.innerText = "delete";
+        i.addEventListener('click', onDeleteClick);
+        i.id = tarefa.id;
         tdAcoes.appendChild(i);
         row.appendChild(tdAcoes);
 
@@ -71,7 +87,21 @@ const render = tarefas => {
     }
 };
 
+const onDeleteClick = (evt) => {
+    //Capturando o id da tarefa a ser removida;
+    let id = Number(evt.target.id);
 
+    //Confirmar a exclusão
+    if(!window.confirm("Tem certeza que deseja excluir a tarefa?")){
+        //Usuario clicou em não. Abortando.
+        return;
+    }
+    //Remover a tarefa do array
+    destroy(id);
+
+    //renderizar novamente
+    render(tarefas);
+}
 
 /**
  * Criar função create(texto,prioridade) que recebe um texto e prioridade como parâmetros
@@ -81,12 +111,24 @@ const render = tarefas => {
  * feito: false
  */
 const create = (texto, prioridade) => {
+    
+    //Determinando o id do novo elemento
+    let id = (tarefas.length==0 ? 1 : tarefas[tarefas.length -1].id +1 );
+
+    //retornando a nova tarefa
     return {
-        id: tarefas[tarefas.length -1].id +1,
+        id,
         texto,
         prioridade,
         feito: false
     }
+}
+
+/*Criar uma função destroy que recebe o id de uma tarefa como
+*parametro e remove essa tarefa do array
+*/
+const destroy = (id) => {
+    tarefas = tarefas.filter(t => t.id != id);
 }
 
 //Capturar o form
@@ -146,7 +188,8 @@ const onFormSubmit = (evt) => {
 
     //Limpar o campo de texto
     document.getElementById("tf_2do").value = "";
- }
+}
+
 form.addEventListener('submit', onFormSubmit);
 
 render(tarefas);
