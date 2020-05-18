@@ -52,6 +52,8 @@ const render = tarefas => {
         let checkbox = document.createElement('input');
         checkbox.setAttribute("type", "checkbox");
         checkbox.checked = tarefa.feito;
+        checkbox.id = "chk_" + tarefa.id;
+        checkbox.addEventListener('click', onCheckClick);
 
         //Criar a célula que vai conter o checkbox
         let tdCheck = document.createElement('td');
@@ -101,6 +103,20 @@ const onDeleteClick = (evt) => {
 
     //renderizar novamente
     render(tarefas);
+}
+
+const onCheckClick = evt => {
+    // capturando o id da tarefa clicada
+    let id = Number(evt.target.id.replace('chk_', ''));
+
+    // Levantar tarefa do id capturado
+    let tarefa = tarefas.find(t => t.id == id);
+
+    //Alterar o campo feito
+    tarefa.feito = !tarefa.feito;
+
+    //Fazer com que a linha dela tenha class="done" ou não(class="");
+    evt.target.parentNode.parentNode.classList.toggle('done');
 }
 
 /**
