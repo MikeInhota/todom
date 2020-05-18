@@ -98,12 +98,20 @@ let form = document.getElementById('form');
 // };
 
 //FORMA 2 =================
-form.addEventListener('submit', (evt) => {
+
+//Crio a função:
+const onFormSubmit = (evt) => { 
+
     //Evitar o comportamento padrão de um form
     evt.preventDefault();
 
     //Capturar o texto dogitado pelo usuário
     let texto = document.getElementById("tf_2do").value;
+
+    //Testando se o texto é vazio
+    if(texto.trim() == '') {
+        return;
+    }
 
     //Verificar se existe prioridade settada nesse texto
     let strInicio = texto.substr(0,3);
@@ -138,6 +146,7 @@ form.addEventListener('submit', (evt) => {
 
     //Limpar o campo de texto
     document.getElementById("tf_2do").value = "";
-});
+ }
+form.addEventListener('submit', onFormSubmit);
 
 render(tarefas);
